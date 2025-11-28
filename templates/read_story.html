@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ story_name }} - Chapter {{ index + 1 }}</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #a83279, #d946ef);
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a.btn {
+            background: #6b7280;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        h2 {
+            color: #7e22ce;
+            margin-bottom: 10px;
+        }
+
+        .chapter-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #333;
+        }
+
+        .chapter-content {
+            margin-top: 20px;
+            padding: 20px;
+            background: #fafafa;
+            border-left: 4px solid #7e22ce;
+            border-radius: 10px;
+            white-space: pre-wrap;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        a.nav-btn {
+            background: #7e22ce;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div class="topbar">
+            <a href="/story" class="btn">← Back</a>
+            <h2>{{ story_name }}</h2>
+            <div style="width:80px;"></div>
+        </div>
+
+        <div class="chapter-title">
+            Chapter {{ index + 1 }} of {{ total }}
+        </div>
+
+        <div class="chapter-content">
+            <strong>{{ chapter.title }}</strong>
+            <br><br>
+            {{ chapter.content }}
+        </div>
+
+        <div class="nav-buttons">
+            {% if index > 0 %}
+            <a href="/read_story/{{ story_name }}/{{ index - 1 }}" class="nav-btn">← Previous</a>
+            {% else %}
+            <a class="nav-btn disabled">← Previous</a>
+            {% endif %}
+
+            {% if index + 1 < total %}
+            <a href="/read_story/{{ story_name }}/{{ index + 1 }}" class="nav-btn">Next →</a>
+            {% else %}
+            <a class="nav-btn disabled">Next →</a>
+            {% endif %}
+        </div>
+
+    </div>
+
+</body>
+</html>
