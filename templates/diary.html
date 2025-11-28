@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Diary Mode</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .waves {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            opacity: 0.28;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            width: 200%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="%23ffffff"></path></svg>')
+                repeat-x;
+            animation: wave 12s linear infinite;
+            opacity: 0.7;
+        }
+
+        .wave:nth-child(2) {
+            animation: wave 18s linear infinite;
+            opacity: 0.5;
+            bottom: 10px;
+        }
+
+        @keyframes wave {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        .card {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.94);
+            padding: 35px;
+            width: 90%;
+            max-width: 650px;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #ddd;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 5px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(30, 60, 114, 0.4);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
+        }
+
+        .msg {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            color: white;
+            background: #1e40af;
+            text-align: center;
+        }
+
+        .back-btn {
+            background: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .date-link {
+            display: block;
+            font-size: 18px;
+            margin: 6px 0;
+            font-weight: bold;
+            color: #1e3c72;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="waves">
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <div class="card">
+
+        <a href="/home">
+            <button class="back-btn">← Back</button>
+        </a>
+
+        <h2>📔 Diary Mode</h2>
+
+        <h3>Add Entry</h3>
+        <form action="/add_entry" method="POST">
+            <input type="text" name="date" placeholder="DD/MM/YYYY" required>
+            <textarea name="entry" placeholder="Write your diary entry..." required></textarea>
+            <button type="submit">Save Entry</button>
+        </form>
+
+        <hr style="margin: 20px 0;">
+
+        <h3>Search Entry</h3>
+        <form action="/search_entry" method="POST">
+            <input type="text" name="search_date" placeholder="Enter date (DD/MM/YYYY)">
+            <button type="submit">Search</button>
+        </form>
+
+        <form action="/show_all" method="POST">
+            <button type="submit">Show All Entries</button>
+        </form>
+
+
+        {% if results %}
+        <div class="msg" style="background:white; color:black; text-align:left;">
+            {% for d in results %}
+                <a class="date-link" href="/read_entry/{{ d }}">{{ d }}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if delete_message %}
+        <div class="msg">{{ delete_message }}</div>
+        {% endif %}
+        
+        <hr style="margin: 20px 0;">
+
+        <h3>Delete Entry</h3>
+        <form action="/delete_entry" method="POST">
+            <input type="text" name="delete_date" placeholder="Enter date to delete">
+            <button type="submit" class="delete-btn">Delete Entry</button>
+        </form>
+
+    </div>
+
+    <script>
+        function attachCalendar(input) {
+            input.addEventListener("focus", function () {
+                const picker = document.createElement("input");
+                picker.type = "date";
+
+                const rect = input.getBoundingClientRect();
+                picker.style.position = "fixed";
+                picker.style.left = rect.left + "px";
+                picker.style.top = rect.top + "px";
+                picker.style.width = rect.width + "px";
+                picker.style.height = rect.height + "px";
+                picker.style.opacity = 0;
+
+                document.body.appendChild(picker);
+
+                picker.addEventListener("change", function () {
+                    const parts = picker.value.split("-");
+                    if (parts.length === 3) {
+                        input.value = `${parts[2]}/${parts[1]}/${parts[0]}`;
+                    }
+                    picker.remove();
+                });
+
+                picker.showPicker();
+            });
+        }
+
+        attachCalendar(document.querySelector("input[name='date']"));
+        attachCalendar(document.querySelector("input[name='search_date']"));
+        attachCalendar(document.querySelector("input[name='delete_date']"));
+    </script>
+
+</body>
+</html>
