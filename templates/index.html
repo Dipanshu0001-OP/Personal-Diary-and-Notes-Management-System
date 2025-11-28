@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Home</title>
+  <style>
+    *{box-sizing:border-box}
+    body{font-family:Arial;margin:0;background:linear-gradient(135deg,#1e3c72,#2a5298,#7e22ce);min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .container{background:rgba(255,255,255,0.95);padding:40px;border-radius:16px; width:90%;max-width:480px;text-align:center;backdrop-filter:blur(8px)}
+    .mode{display:block;margin:12px 0;padding:16px;border-radius:12px;background:linear-gradient(135deg,#2a5298,#1e3c72);color:white;border:none;font-size:18px;cursor:pointer}
+    .logout{background:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📘 Personal Organizer</h1>
+    <a href="/diary"><button class="mode">📔 Diary Mode</button></a>
+    <a href="/notes"><button class="mode">📝 Notes Mode</button></a>
+    <a href="/story"><button class="mode">📚 Story Mode</button></a>
+    <br><br>
+    <a href="/logout"><button class="mode logout">🚪 Logout</button></a>
+  </div>
+</body>
+</html>
