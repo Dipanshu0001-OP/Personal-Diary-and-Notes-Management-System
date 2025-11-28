@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit {{ mode }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="container">
+    <h2>✏️ Edit {{ mode }}</h2>
+    <form method="POST">
+        <textarea name="{{ 'note' if mode=='Note' else 'entry' if mode=='Diary' else 'content' }}" required>{{ entry }}</textarea>
+        <button type="submit" class="btn">Save Changes</button>
+    </form>
+    <a href="/{{ mode|lower }}s" class="btn back">⬅ Back</a>
+</div>
+</body>
+</html>
