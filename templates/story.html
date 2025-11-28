@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"><title>Story</title>
+  <style>
+    body{
+      font-family:Arial;margin:0;
+      background:linear-gradient(135deg,#a83279,#d946ef);
+      min-height:100vh;display:flex;justify-content:center;
+      padding:40px
+    }
+    .card{
+      width:90%;max-width:900px;background:white;
+      padding:26px;border-radius:14px
+    }
+    input,textarea,select{
+      width:100%;padding:10px;margin:8px 0;
+      border-radius:8px;border:1px solid #ccc
+    }
+    button{
+      padding:10px;border-radius:8px;border:none;
+      background:#7e22ce;color:white;cursor:pointer
+    }
+    .story-card{
+      border-left:4px solid #7e22ce;
+      padding:12px;margin:10px 0;border-radius:8px
+    }
+    .small{
+      display:inline-block;padding:6px 10px;
+      margin-left:6px;font-size:14px
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <a href="/home">
+      <button style="background:#6b7280;color:white">⬅ Back</button>
+    </a>
+
+    <h2>📚 Story Mode</h2>
+
+    <h3>Create Story</h3>
+    <form action="/create_story" method="POST">
+      <input name="story_name" placeholder="Story name (letters / numbers)">
+      <button type="submit">Create Story</button>
+    </form>
+
+    <hr>
+
+    <h3>Add Chapter</h3>
+    <form action="/add_chapter" method="POST">
+      <input name="story_name" placeholder="Story name to add chapter">
+      <input name="chapter_title" placeholder="Chapter title">
+      <textarea name="chapter_content" placeholder="Chapter content"></textarea>
+      <button type="submit">Add Chapter</button>
+    </form>
+
+    <hr>
+
+    <h3>Available Stories</h3>
+
+    {% for s in stories %}
+      <div class="story-card">
+        <strong>{{ s }}</strong>
+
+        <div style="margin-top:8px">
+
+          <form action="/read_story" method="POST" style="display:inline-block">
+            <input type="hidden" name="story_name" value="{{ s }}">
+            <button type="submit" class="small">Read</button>
+          </form>
+
+          <a href="{{ url_for('edit_story_redirect', story_name=s) }}">
+            <button class="small" style="background:#059669">Edit</button>
+          </a>
+
+          <form action="/story/delete/{{ s }}" method="POST" style="display:inline-block">
+            <button type="submit" class="small" style="background:#dc2626">Delete</button>
+          </form>
+
+          <form action="/bookmark" method="POST" style="display:inline-block">
+            <input type="hidden" name="story_name" value="{{ s }}">
+            <input type="hidden" name="chapter_index" value="0">
+            <button class="small" style="background:#f59e0b">Bookmark</button>
+          </form>
+
+        </div>
+      </div>
+    {% endfor %}
+
+    {% if story_text %}
+      <hr>
+      <h3>Reading: {{ story_name }}</h3>
+      <pre style="white-space:pre-wrap;background:#fafafa;padding:14px;border-radius:8px">{{ story_text }}</pre>
+    {% endif %}
+
+    {% if bookmark_story %}
+      <hr>
+      <h4>📌 Bookmark: {{ bookmark_story }} — Chapter {{ bookmark_chapter + 1 }}</h4>
+
+      <a href="/read_story/{{ bookmark_story }}/{{ bookmark_chapter }}">
+        <button>Continue Reading</button>
+      </a>
+    {% endif %}
+
+  </div>
+</body>
+</html>
